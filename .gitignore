@@ -43,3 +43,5 @@ next-env.d.ts
 # local mock storage
 .local-drive-storage/
 
+
+.vercel
