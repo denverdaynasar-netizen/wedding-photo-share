@@ -64,6 +64,68 @@ function saveMockFiles(folderId: string, files: any[]): void {
   fs.writeFileSync(metaFile, JSON.stringify(files, null, 2), 'utf-8');
 }
 
+const folderCache = new Map<string, string>();
+
+/**
+ * Resolves a real Google Drive folder ID for an event.
+ * If the event has a mock ID, searches Google Drive for the existing event folder or creates one.
+ */
+export async function getEventDriveFolderId(
+  folderId: string,
+  eventName: string,
+  slug?: string
+): Promise<string> {
+  if (!isDriveConfigured()) {
+    return folderId;
+  }
+
+  if (folderId && !folderId.startsWith('mock-')) {
+    return folderId;
+  }
+
+  const cacheKey = (eventName || slug || 'wedding').toLowerCase().trim();
+  if (folderCache.has(cacheKey)) {
+    return folderCache.get(cacheKey)!;
+  }
+
+  const drive = getDriveClient();
+
+  // Search for an existing folder matching this wedding in Google Drive
+  try {
+    const query = `name contains 'Wedding' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
+    const res = await drive.files.list({
+      q: query,
+      fields: 'files(id, name)',
+      pageSize: 20,
+    });
+
+    const files = res.data.files || [];
+    for (const f of files) {
+      const lower = f.name?.toLowerCase() || '';
+      if (
+        lower.includes(cacheKey) ||
+        (slug && lower.includes(slug.toLowerCase())) ||
+        (cacheKey.includes('noel') && lower.includes('noel'))
+      ) {
+        folderCache.set(cacheKey, f.id!);
+        return f.id!;
+      }
+    }
+  } catch (err: any) {
+    console.warn('Error querying existing Drive folder:', err.message);
+  }
+
+  // If not found, create the real folder
+  try {
+    const newId = await createDriveFolder(`Wedding - ${eventName}`);
+    folderCache.set(cacheKey, newId);
+    return newId;
+  } catch (createErr) {
+    console.error('Failed to create Drive folder:', createErr);
+    return folderId;
+  }
+}
+
 /**
  * Creates a folder in Google Drive (or mock directory).
  */

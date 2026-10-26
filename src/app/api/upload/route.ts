@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getEventBySlug } from '@/lib/events';
 import { checkRateLimit, sanitizeFileName, validateImageFile } from '@/lib/rate-limit';
-import { uploadFileStream } from '@/lib/google-drive';
+import { uploadFileStream, getEventDriveFolderId } from '@/lib/google-drive';
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,12 +44,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
+    const resolvedFolderId = await getEventDriveFolderId(
+      event.driveFolderId,
+      event.name,
+      event.slug
+    );
+
     const sanitizedName = sanitizeFileName(file.name, uploaderName || 'guest');
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
     const uploadedPhoto = await uploadFileStream(
-      event.driveFolderId,
+      resolvedFolderId,
       sanitizedName,
       file.type || 'image/jpeg',
       buffer,

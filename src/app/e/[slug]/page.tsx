@@ -316,6 +316,11 @@ function GuestEventContent() {
 
       await fetchPhotos();
       setShowThankYou(true);
+
+      // Auto-clear finished upload queue after 3 seconds
+      setTimeout(() => {
+        setQueue((prev) => prev.filter((q) => q.status !== 'done'));
+      }, 3500);
     };
 
     processQueue();

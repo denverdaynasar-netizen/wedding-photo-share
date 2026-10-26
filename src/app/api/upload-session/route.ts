@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getEventBySlug } from '@/lib/events';
 import { checkRateLimit, sanitizeFileName, validateImageFile } from '@/lib/rate-limit';
-import { createResumableUploadSession, getFolderStats } from '@/lib/google-drive';
+import { createResumableUploadSession, getFolderStats, getEventDriveFolderId } from '@/lib/google-drive';
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,9 +40,16 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Resolve real Google Drive folder
+    const resolvedFolderId = await getEventDriveFolderId(
+      event.driveFolderId,
+      event.name,
+      event.slug
+    );
+
     // Check max photos limit if configured
     if (event.maxPhotos && event.maxPhotos > 0) {
-      const stats = await getFolderStats(event.driveFolderId);
+      const stats = await getFolderStats(resolvedFolderId);
       if (stats.photoCount >= event.maxPhotos) {
         return NextResponse.json({ error: `Event photo limit (${event.maxPhotos}) has been reached.` }, { status: 403 });
       }
@@ -59,7 +66,7 @@ export async function POST(req: NextRequest) {
 
     // Create session
     const session = await createResumableUploadSession(
-      event.driveFolderId,
+      resolvedFolderId,
       sanitizedName,
       mimeType || 'image/jpeg',
       uploaderName || 'Guest',

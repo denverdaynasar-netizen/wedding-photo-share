@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getEventBySlug } from '@/lib/events';
-import { listFolderPhotos } from '@/lib/google-drive';
+import { listFolderPhotos, getEventDriveFolderId } from '@/lib/google-drive';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,8 +20,14 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
 
-    const { photos, nextPageToken } = await listFolderPhotos(
+    const resolvedFolderId = await getEventDriveFolderId(
       event.driveFolderId,
+      event.name,
+      event.slug
+    );
+
+    const { photos, nextPageToken } = await listFolderPhotos(
+      resolvedFolderId,
       event.slug,
       limit,
       cursor
