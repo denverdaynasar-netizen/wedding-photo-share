@@ -515,6 +515,46 @@ function GuestEventContent() {
 
       {/* Main Gallery Area */}
       <main className="max-w-4xl w-full mx-auto px-3 sm:px-6 space-y-6">
+        {/* Prominent Upload Action Card */}
+        {event.uploadEnabled && (
+          <div className="glass-panel rounded-3xl p-6 sm:p-8 text-center shadow-sm space-y-4 border border-stone-200/80">
+            <div>
+              <span className="text-[10px] uppercase tracking-[0.25em] text-[#9C7A4A] font-semibold block mb-1">
+                Guest Upload
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-serif font-light text-stone-900">
+                Add Your Photos to the Story
+              </h2>
+              <p className="text-xs text-stone-500 font-light max-w-sm mx-auto mt-1">
+                Snap a live candid or select photos from your camera roll. Everything uploads directly to the couple&apos;s private Google Drive.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto pt-2">
+              <button
+                type="button"
+                onClick={() => cameraInputRef.current?.click()}
+                className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-full bg-stone-100 hover:bg-stone-200/80 text-stone-800 text-xs font-medium transition active:scale-98 shadow-xs"
+              >
+                <Camera className="w-4 h-4 text-stone-700" />
+                <span>Take Photo</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => filePickerRef.current?.click()}
+                className="w-full sm:w-auto flex-[1.3] flex items-center justify-center gap-2 py-3.5 px-7 rounded-full text-white text-xs font-semibold uppercase tracking-wider transition shadow-md hover:brightness-105 active:scale-98 transform"
+                style={{
+                  background: `linear-gradient(135deg, ${accentColor} 0%, #D4BA88 50%, #9C7A4A 100%)`,
+                }}
+              >
+                <Plus className="w-4 h-4 stroke-[2.5]" />
+                <span>Upload Photos</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Thank You Celebration Toast */}
         {showThankYou && (
           <div className="glass-panel border-emerald-300/60 rounded-3xl p-5 flex items-center justify-between shadow-lg shadow-emerald-900/5 animate-in fade-in slide-in-from-top duration-400">
