@@ -1,0 +1,38 @@
+[
+  {
+    "id": "evt-default-1",
+    "slug": "noel-and-danica",
+    "name": "Noel & Danica's Wedding",
+    "welcomeMessage": "Thank you for celebrating with us! Please snap and share all your favorite moments from our special day.",
+    "eventCode": "",
+    "uploadEnabled": true,
+    "driveFolderId": "mock-folder-noel-and-danica",
+    "accentColor": "#C59B6D",
+    "createdAt": "2026-10-24T10:06:36.039Z",
+    "updatedAt": "2026-10-24T10:06:36.039Z"
+  },
+  {
+    "name": "Protected VIP Wedding",
+    "slug": "vip-wedding",
+    "welcomeMessage": "Thank you for sharing your memories with us!",
+    "eventCode": "VIP2026",
+    "uploadEnabled": true,
+    "driveFolderId": "mock-folder-1792836462655",
+    "accentColor": "#C59B6D",
+    "id": "evt-1792836462656-ddb2l",
+    "createdAt": "2026-10-24T10:07:42.656Z",
+    "updatedAt": "2026-10-24T10:07:42.656Z"
+  },
+  {
+    "name": "Protected VIP Wedding",
+    "slug": "vip-wedding-1792837963715",
+    "welcomeMessage": "Thank you for sharing your memories with us!",
+    "eventCode": "VIP2026",
+    "uploadEnabled": true,
+    "driveFolderId": "mock-folder-1792837963730",
+    "accentColor": "#C59B6D",
+    "id": "evt-1792837963732-tzj3i",
+    "createdAt": "2026-10-24T10:32:43.732Z",
+    "updatedAt": "2026-10-24T10:32:43.732Z"
+  }
+]
