@@ -111,6 +111,15 @@ export async function createResumableUploadSession(
     };
   }
 
+  // If this event was using a mock folder ID, auto-create a real Google Drive folder now
+  if (folderId.startsWith('mock-')) {
+    try {
+      folderId = await createDriveFolder(`Wedding - ${slug}`);
+    } catch (e) {
+      console.warn('Auto-create folder error:', e);
+    }
+  }
+
   const oauth2Client = getOAuth2Client();
   const tokenResponse = await oauth2Client.getAccessToken();
   const accessToken = tokenResponse.token;
@@ -192,6 +201,15 @@ export async function uploadFileStream(
     return newPhoto;
   }
 
+  // Auto-upgrade mock folder ID to real Google Drive folder
+  if (folderId.startsWith('mock-')) {
+    try {
+      folderId = await createDriveFolder(`Wedding - ${slug}`);
+    } catch (e) {
+      console.warn('Auto-create folder error in stream:', e);
+    }
+  }
+
   const drive = getDriveClient();
   const stream = new Readable();
   stream.push(buffer);
@@ -247,44 +265,49 @@ export async function listFolderPhotos(
   const drive = getDriveClient();
   const query = `'${folderId}' in parents and trashed = false and mimeType contains 'image/'`;
 
-  const res = await drive.files.list({
-    q: query,
-    pageSize: pageSize,
-    pageToken: pageToken || undefined,
-    orderBy: 'createdTime desc',
-    fields: 'nextPageToken, files(id, name, createdTime, size, mimeType, thumbnailLink, properties, description)',
-  });
+  try {
+    const res = await drive.files.list({
+      q: query,
+      pageSize: pageSize,
+      pageToken: pageToken || undefined,
+      orderBy: 'createdTime desc',
+      fields: 'nextPageToken, files(id, name, createdTime, size, mimeType, thumbnailLink, properties, description)',
+    });
 
-  const files = res.data.files || [];
-  const photos: PhotoMetadata[] = files.map((file) => {
-    let uploader = file.properties?.uploaderName;
-    if (!uploader && file.description) {
-      const match = file.description.match(/Uploaded by (.*?) via/);
-      if (match) uploader = match[1];
-    }
-    if (!uploader && file.name) {
-      const parts = file.name.split('_');
-      if (parts.length >= 3) {
-        uploader = parts[1];
+    const files = res.data.files || [];
+    const photos: PhotoMetadata[] = files.map((file) => {
+      let uploader = file.properties?.uploaderName;
+      if (!uploader && file.description) {
+        const match = file.description.match(/Uploaded by (.*?) via/);
+        if (match) uploader = match[1];
       }
-    }
+      if (!uploader && file.name) {
+        const parts = file.name.split('_');
+        if (parts.length >= 3) {
+          uploader = parts[1];
+        }
+      }
+
+      return {
+        id: file.id || '',
+        name: file.name || 'Photo',
+        createdTime: file.createdTime || new Date().toISOString(),
+        size: Number(file.size || 0),
+        thumbnailUrl: `/api/photo/${file.id}/thumb`,
+        fullUrl: `/api/photo/${file.id}/full`,
+        uploaderName: uploader || 'Guest',
+        slug,
+      };
+    });
 
     return {
-      id: file.id || '',
-      name: file.name || 'Photo',
-      createdTime: file.createdTime || new Date().toISOString(),
-      size: Number(file.size || 0),
-      thumbnailUrl: `/api/photo/${file.id}/thumb`,
-      fullUrl: `/api/photo/${file.id}/full`,
-      uploaderName: uploader || 'Guest',
-      slug,
+      photos,
+      nextPageToken: res.data.nextPageToken || undefined,
     };
-  });
-
-  return {
-    photos,
-    nextPageToken: res.data.nextPageToken || undefined,
-  };
+  } catch (err: any) {
+    console.warn(`Drive folder ${folderId} inaccessible or not found, returning empty photos list:`, err.message);
+    return { photos: [] };
+  }
 }
 
 /**
@@ -411,7 +434,7 @@ export async function trashPhoto(fileId: string, folderId?: string): Promise<boo
  * Gets stats (count and total size) for an event folder.
  */
 export async function getFolderStats(folderId: string): Promise<EventStats> {
-  if (!isDriveConfigured()) {
+  if (!isDriveConfigured() || folderId.startsWith('mock-')) {
     const files = getMockFiles(folderId).filter((f) => !f.trashed);
     const totalBytes = files.reduce((acc, f) => acc + (f.size || 0), 0);
     return { photoCount: files.length, totalBytes };
