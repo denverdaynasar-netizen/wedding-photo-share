@@ -1,6 +1,6 @@
-# Wedding Photo Share 💍📸
+# MemoryShare 💍📸
 
-A mobile-first, elegant wedding photo sharing web application. Wedding guests scan a table QR code, upload high-resolution photos directly from their mobile camera or photo library, and view a live shared gallery. All photos are stored securely in the owner's personal 5TB Google Drive via the Google Drive API.
+A mobile-first, elegant event & wedding photo sharing web application. Guests scan a table QR code, upload high-resolution photos directly from their mobile camera or photo library, and view a live shared gallery. All photos are stored securely in the owner's personal 5TB Google Drive via the Google Drive API.
 
 ---
 
@@ -74,7 +74,7 @@ Follow these steps to link your personal Google Drive account:
 
 ### 1. Create a Project & Enable the Drive API
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
-2. Click the project dropdown in the top bar and select **New Project**. Name it `Wedding Photo Share`.
+2. Click the project dropdown in the top bar and select **New Project**. Name it `MemoryShare`.
 3. In the left sidebar, navigate to **APIs & Services > Library**.
 4. Search for **Google Drive API**, click it, and click **Enable**.
 
@@ -82,7 +82,7 @@ Follow these steps to link your personal Google Drive account:
 1. Navigate to **APIs & Services > OAuth consent screen**.
 2. Select **User Type: External** and click **Create**.
 3. Fill in the required fields:
-   - **App name**: `Wedding Photo Share`
+   - **App name**: `MemoryShare`
    - **User support email**: Your Google account email.
    - **Developer contact information**: Your email address.
 4. Click **Save and Continue** through Scopes (no manual scopes need to be added here; the app requests `drive` / `drive.file` at runtime).

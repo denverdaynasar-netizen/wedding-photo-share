@@ -18,8 +18,8 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Wedding Photo Share • Capture & Cherish Every Moment",
-  description: "An elegant, private wedding photo gallery where guests upload memories directly to Google Drive.",
+  title: "MemoryShare • Capture & Cherish Every Moment",
+  description: "An elegant, private photo gallery where guests upload memories directly to Google Drive.",
 };
 
 export const viewport: Viewport = {

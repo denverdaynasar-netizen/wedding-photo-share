@@ -23,7 +23,7 @@ function createFakeJpegBuffer() {
 }
 
 async function runTests() {
-  console.log('🚀 STARTING COMPREHENSIVE WEDDING PHOTO SHARE TESTS\n');
+  console.log('🚀 STARTING COMPREHENSIVE MEMORYSHARE TESTS\n');
   let passed = 0;
   let failed = 0;
 

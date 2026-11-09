@@ -221,7 +221,7 @@ ADMIN_PASSWORD="your-secure-admin-password"
                   >
                     Google Cloud Console <ExternalLink className="w-3 h-3" />
                   </a>
-                  , create a new project (e.g., &quot;Wedding Photo Share&quot;), then navigate to <strong>APIs & Services &gt; Library</strong>. Search for <strong>Google Drive API</strong> and click <strong>Enable</strong>.
+                  , create a new project (e.g., &quot;MemoryShare&quot;), then navigate to <strong>APIs & Services &gt; Library</strong>. Search for <strong>Google Drive API</strong> and click <strong>Enable</strong>.
                 </p>
               </div>
             </div>
@@ -238,7 +238,7 @@ ADMIN_PASSWORD="your-secure-admin-password"
                 </p>
                 <ul className="list-disc pl-5 space-y-1 text-stone-600">
                   <li>User Type: <strong>External</strong></li>
-                  <li>App name: <strong>Wedding Photo Share</strong></li>
+                  <li>App name: <strong>MemoryShare</strong></li>
                   <li>User support email: your personal Gmail/Google email</li>
                   <li>Developer contact email: your email</li>
                 </ul>

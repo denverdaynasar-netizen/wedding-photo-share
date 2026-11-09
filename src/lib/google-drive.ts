@@ -141,7 +141,7 @@ export async function createDriveFolder(folderName: string): Promise<string> {
     requestBody: {
       name: folderName,
       mimeType: 'application/vnd.google-apps.folder',
-      description: 'Wedding Photo Share Event Folder',
+      description: 'MemoryShare Event Folder',
     },
     fields: 'id',
   });
@@ -194,7 +194,7 @@ export async function createResumableUploadSession(
   const metadata = {
     name: fileName,
     parents: [folderId],
-    description: `Uploaded by ${uploaderName} via Wedding Photo Share`,
+    description: `Uploaded by ${uploaderName} via MemoryShare`,
     properties: {
       uploaderName: uploaderName || 'Guest',
       slug: slug,
@@ -281,7 +281,7 @@ export async function uploadFileStream(
     requestBody: {
       name: fileName,
       parents: [folderId],
-      description: `Uploaded by ${uploaderName} via Wedding Photo Share`,
+      description: `Uploaded by ${uploaderName} via MemoryShare`,
       properties: {
         uploaderName: uploaderName || 'Guest',
         slug: slug,

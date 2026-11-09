@@ -373,7 +373,7 @@ export default function AdminPage() {
       <nav className="bg-white border-b border-stone-200 px-4 sm:px-8 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-xs">
         <div className="flex items-center gap-3">
           <span className="font-serif font-bold text-lg text-stone-900 tracking-tight">
-            Wedding Photo Share
+            MemoryShare
           </span>
           <span className="text-[11px] font-semibold bg-stone-100 px-2.5 py-0.5 rounded-full text-stone-600">
             Admin

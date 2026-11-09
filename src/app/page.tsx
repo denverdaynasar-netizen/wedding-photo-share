@@ -13,7 +13,7 @@ export default async function HomePage() {
         <div className="flex items-center gap-2.5">
           <Heart className="w-4 h-4 text-[#9C7A4A] stroke-[1.75]" />
           <span className="font-serif text-xl font-normal text-stone-900 tracking-tight">
-            Wedding Photo Share
+            MemoryShare
           </span>
         </div>
 
@@ -100,7 +100,7 @@ export default async function HomePage() {
 
       {/* Footer */}
       <footer className="py-8 px-6 text-center border-t border-[#E8DEC8]/60 text-xs text-stone-500 font-serif italic">
-        Wedding Photo Share • Crafted with elegance for your celebration
+        MemoryShare • Crafted with elegance for your celebration
       </footer>
     </div>
   );
