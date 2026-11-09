@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Auto-create folder in Google Drive
-    const folderName = `Wedding - ${name.trim()}`;
+    const folderName = `MemoryShare - ${name.trim()}`;
     const driveFolderId = await createDriveFolder(folderName);
 
     const created = await createEvent({

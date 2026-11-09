@@ -426,7 +426,7 @@ export default function AdminPage() {
             className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white text-xs font-semibold shadow-xs shrink-0 transition"
           >
             <Plus className="w-4 h-4" />
-            <span>New Wedding Event</span>
+            <span>New Event</span>
           </button>
         </div>
 
@@ -664,18 +664,18 @@ export default function AdminPage() {
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-stone-200 space-y-5 max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-serif font-bold text-stone-900">
-              Create New Wedding Event
+              Create New Event
             </h2>
 
             <form onSubmit={handleCreateEvent} className="space-y-4 text-xs">
               <div>
                 <label className="block font-medium text-stone-700 mb-1">
-                  Couple / Event Name *
+                  Event / Celebrant Name *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Noel & Danica's Wedding"
+                  placeholder="e.g. Chloe's 18th Birthday or Noel & Danica's Wedding"
                   value={formName}
                   onChange={(e) => {
                     setFormName(e.target.value);

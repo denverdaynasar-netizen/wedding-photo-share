@@ -98,7 +98,7 @@ export async function generateTableCardPdf(event: WeddingEvent, guestUrl: string
   doc.setFont('helvetica', 'italic');
   doc.setFontSize(7.5);
   doc.setTextColor(150, 140, 135);
-  doc.text('No app download required • Photos uploaded directly to couple’s drive', pageWidth / 2, 137, { align: 'center' });
+  doc.text('No app download required • Photos uploaded directly to the private album', pageWidth / 2, 137, { align: 'center' });
 
   doc.save(`${event.slug}-table-card-A6.pdf`);
 }

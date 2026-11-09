@@ -395,7 +395,7 @@ function GuestEventContent() {
         </div>
         <h1 className="text-3xl font-serif text-stone-900 font-normal mb-2">Celebration Not Found</h1>
         <p className="text-stone-500 max-w-sm text-sm font-light">
-          {eventError || 'This wedding gallery is not currently active.'}
+          {eventError || 'This gallery is not currently active.'}
         </p>
       </div>
     );
@@ -469,7 +469,7 @@ function GuestEventContent() {
         <div className="flex items-center justify-center gap-3 mb-4">
           <div className="h-px w-8 bg-gradient-to-r from-transparent to-[#C5A880]" />
           <span className="text-[10px] uppercase tracking-[0.3em] text-[#9C7A4A] font-semibold">
-            Wedding Gallery
+            Shared Memory Gallery
           </span>
           <div className="h-px w-8 bg-gradient-to-l from-transparent to-[#C5A880]" />
         </div>
