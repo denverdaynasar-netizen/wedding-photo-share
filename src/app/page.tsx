@@ -29,7 +29,7 @@ export default async function HomePage() {
       <main className="max-w-4xl mx-auto px-6 py-16 sm:py-24 text-center space-y-8">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-[#E8DEC8] text-xs text-[#8E6E3D] font-medium shadow-2xs">
           <Sparkles className="w-3.5 h-3.5" />
-          <span className="uppercase tracking-[0.2em] text-[10px]">Private Wedding Galleries</span>
+          <span className="uppercase tracking-[0.2em] text-[10px]">Private Event Galleries</span>
         </div>
 
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-serif font-light text-stone-900 tracking-tight leading-[1.08]">
@@ -92,7 +92,7 @@ export default async function HomePage() {
             </div>
             <h3 className="font-serif font-bold text-stone-900 text-base mb-1.5">A6 Printable Table Cards</h3>
             <p className="text-stone-600 text-xs leading-relaxed font-light">
-              Generate 1-click print-ready A6 cardstock PDFs with custom wedding calligraphy, table instructions, and QR codes.
+              Generate 1-click print-ready A6 cardstock PDFs with elegant event typography, table instructions, and QR codes.
             </p>
           </div>
         </div>
