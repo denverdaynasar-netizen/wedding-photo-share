@@ -90,9 +90,9 @@ export async function getEventDriveFolderId(
 
   const drive = getDriveClient();
 
-  // Search for an existing folder matching this wedding in Google Drive
+  // Search for an existing folder matching this event in Google Drive
   try {
-    const query = `name contains 'Wedding' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
+    const query = `(name contains 'Wedding' or name contains 'MemoryShare') and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
     const res = await drive.files.list({
       q: query,
       fields: 'files(id, name)',
@@ -117,7 +117,7 @@ export async function getEventDriveFolderId(
 
   // If not found, create the real folder
   try {
-    const newId = await createDriveFolder(`Wedding - ${eventName}`);
+    const newId = await createDriveFolder(`MemoryShare - ${eventName}`);
     folderCache.set(cacheKey, newId);
     return newId;
   } catch (createErr) {
