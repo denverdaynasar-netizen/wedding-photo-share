@@ -81,10 +81,10 @@ export async function processImageForUpload(
     const workingFile = new File([workingBlob], fileName, { type: 'image/jpeg' });
 
     const options = {
-      maxSizeMB: 2,
-      maxWidthOrHeight: 2400,
+      maxSizeMB: 3.5,
+      maxWidthOrHeight: 2880,
       useWebWorker: true,
-      initialQuality: 0.85,
+      initialQuality: 0.88,
       fileType: 'image/jpeg',
       alwaysKeepResolution: false,
     };
@@ -94,7 +94,7 @@ export async function processImageForUpload(
   } catch (compErr) {
     console.warn('browser-image-compression fallback to canvas resize:', compErr);
     // Canvas fallback
-    compressedBlob = await canvasResizeFallback(workingBlob, 2400, 0.85);
+    compressedBlob = await canvasResizeFallback(workingBlob, 2880, 0.88);
   }
 
   const finalFile = new File([compressedBlob], fileName.replace(/\.[^/.]+$/, '') + '.jpg', {
