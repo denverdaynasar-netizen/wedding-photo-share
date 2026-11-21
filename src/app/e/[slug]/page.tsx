@@ -21,7 +21,7 @@ import {
   Plus,
 } from 'lucide-react';
 import { PhotoMetadata } from '@/types';
-import { validateClientFile, processImageForUpload, uploadToResumableSession } from '@/lib/image-processing';
+import { validateClientFile, processImageForUpload } from '@/lib/image-processing';
 
 interface QueueItem {
   id: string;
@@ -222,67 +222,50 @@ function GuestEventContent() {
             });
 
             setQueue((prev) =>
-              prev.map((q) => (q.id === item.id ? { ...q, status: 'uploading', stepMessage: 'Connecting...' } : q))
+              prev.map((q) => (q.id === item.id ? { ...q, status: 'uploading', stepMessage: 'Uploading...' } : q))
             );
 
-            const sessionRes = await fetch('/api/upload-session', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                slug,
-                accessCode: enteredCode.trim(),
-                fileName: processed.file.name,
-                fileSize: processed.file.size,
-                mimeType: processed.file.type,
-                uploaderName: guestName.trim() || 'Guest',
-              }),
-            });
+            // Upload directly to server route with progress tracking (prevents duplicate CORS fallback)
+            const formData = new FormData();
+            formData.append('file', processed.file);
+            formData.append('slug', slug);
+            formData.append('accessCode', enteredCode.trim());
+            formData.append('uploaderName', guestName.trim() || 'Guest');
 
-            const sessionData = await sessionRes.json();
-            if (!sessionRes.ok) {
-              throw new Error(sessionData.error || 'Failed to start upload session');
-            }
+            await new Promise<void>((resolve, reject) => {
+              const xhr = new XMLHttpRequest();
+              xhr.open('POST', '/api/upload', true);
 
-            if (sessionData.mode === 'resumable') {
-              try {
-                await uploadToResumableSession(sessionData.uploadUrl, processed.file, (percent) => {
+              xhr.upload.onprogress = (e) => {
+                if (e.lengthComputable) {
+                  const percent = Math.round((e.loaded / e.total) * 100);
                   setQueue((prev) =>
-                    prev.map((q) => (q.id === item.id ? { ...q, progress: percent, stepMessage: `Uploading ${percent}%` } : q))
+                    prev.map((q) =>
+                      q.id === item.id ? { ...q, progress: percent, stepMessage: `Uploading ${percent}%` } : q
+                    )
                   );
-                });
-              } catch (resumableErr) {
-                console.warn('Resumable PUT fallback to server route:', resumableErr);
-                const formData = new FormData();
-                formData.append('file', processed.file);
-                formData.append('slug', slug);
-                formData.append('accessCode', enteredCode.trim());
-                formData.append('uploaderName', guestName.trim() || 'Guest');
-
-                const fbRes = await fetch('/api/upload', {
-                  method: 'POST',
-                  body: formData,
-                });
-                if (!fbRes.ok) {
-                  const fbData = await fbRes.json();
-                  throw new Error(fbData.error || 'Server upload failed');
                 }
-              }
-            } else {
-              const formData = new FormData();
-              formData.append('file', processed.file);
-              formData.append('slug', slug);
-              formData.append('accessCode', enteredCode.trim());
-              formData.append('uploaderName', guestName.trim() || 'Guest');
+              };
 
-              const directRes = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData,
-              });
-              if (!directRes.ok) {
-                const directData = await directRes.json();
-                throw new Error(directData.error || 'Upload failed');
-              }
-            }
+              xhr.onload = () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                  resolve();
+                } else {
+                  let errMsg = 'Upload failed';
+                  try {
+                    const data = JSON.parse(xhr.responseText);
+                    errMsg = data.error || errMsg;
+                  } catch {}
+                  reject(new Error(errMsg));
+                }
+              };
+
+              xhr.onerror = () => {
+                reject(new Error('Network error during upload'));
+              };
+
+              xhr.send(formData);
+            });
 
             setQueue((prev) =>
               prev.map((q) =>
