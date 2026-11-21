@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdminAuth } from '@/lib/auth';
 import { getEventBySlug } from '@/lib/events';
-import { trashPhoto, verifyFileBelongsToFolder } from '@/lib/google-drive';
+import { trashPhoto, verifyFileBelongsToFolder, getEventDriveFolderId } from '@/lib/google-drive';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +27,7 @@ export async function DELETE(
     if (slug) {
       const event = await getEventBySlug(slug);
       if (event) {
-        folderId = event.driveFolderId;
+        folderId = await getEventDriveFolderId(event.driveFolderId, event.name, event.slug);
         const belongs = await verifyFileBelongsToFolder(id, folderId);
         if (!belongs) {
           return NextResponse.json({ error: 'Photo does not belong to this event folder.' }, { status: 403 });
