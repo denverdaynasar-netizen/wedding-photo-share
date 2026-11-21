@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdminAuth } from '@/lib/auth';
 import { getAllEvents, createEvent } from '@/lib/events';
-import { createDriveFolder, getFolderStats } from '@/lib/google-drive';
+import { createDriveFolder, getFolderStats, getEventDriveFolderId } from '@/lib/google-drive';
 import { sanitizeSlug } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
@@ -15,12 +15,26 @@ export async function GET(req: NextRequest) {
 
     const events = await getAllEvents();
 
-    // Attach stats to each event
+    // Attach stats and resolve real Google Drive folder IDs
     const eventsWithStats = await Promise.all(
       events.map(async (event) => {
-        const stats = await getFolderStats(event.driveFolderId);
+        let driveFolderId = event.driveFolderId;
+        try {
+          driveFolderId = await getEventDriveFolderId(event.driveFolderId, event.name, event.slug);
+        } catch (e) {
+          console.warn('Could not resolve drive folder for event:', event.slug, e);
+        }
+
+        let stats = { photoCount: 0, totalBytes: 0 };
+        try {
+          stats = await getFolderStats(driveFolderId);
+        } catch (e) {
+          console.warn('Could not get stats for folder:', driveFolderId, e);
+        }
+
         return {
           ...event,
+          driveFolderId,
           stats,
         };
       })

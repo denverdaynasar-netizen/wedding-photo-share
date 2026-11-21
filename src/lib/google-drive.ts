@@ -39,8 +39,12 @@ export function getDriveClient() {
 // Ensure mock storage directory exists
 function ensureMockFolder(folderId: string): string {
   const folderPath = path.join(MOCK_STORAGE_DIR, folderId);
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath, { recursive: true });
+  try {
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath, { recursive: true });
+    }
+  } catch {
+    // Gracefully ignore read-only serverless filesystem on Vercel
   }
   return folderPath;
 }
@@ -50,9 +54,9 @@ function getMockMetaFile(folderId: string): string {
 }
 
 function getMockFiles(folderId: string): Array<PhotoMetadata & { trashed?: boolean; mimeType?: string }> {
-  const metaFile = getMockMetaFile(folderId);
-  if (!fs.existsSync(metaFile)) return [];
   try {
+    const metaFile = getMockMetaFile(folderId);
+    if (!fs.existsSync(metaFile)) return [];
     return JSON.parse(fs.readFileSync(metaFile, 'utf-8'));
   } catch {
     return [];
