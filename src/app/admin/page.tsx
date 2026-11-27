@@ -21,6 +21,8 @@ import {
   Eye,
   Sliders,
   ChevronRight,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { WeddingEvent, PhotoMetadata } from '@/types';
 import { downloadQrPng, generateTableCardPdf } from '@/lib/pdf-card';
@@ -53,6 +55,7 @@ export default function AdminPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [submittingEvent, setSubmittingEvent] = useState(false);
   const [deletingPhotoId, setDeletingPhotoId] = useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   // Form fields
   const [formName, setFormName] = useState('');
@@ -377,6 +380,13 @@ export default function AdminPage() {
 
   const guestUrl = activeEvent ? `${origin}/e/${activeEvent.slug}` : '';
 
+  const handleCopyLink = () => {
+    if (!guestUrl) return;
+    navigator.clipboard.writeText(guestUrl);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
+
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-stone-800 pb-16">
       {/* Top Navbar */}
@@ -473,6 +483,23 @@ export default function AdminPage() {
                     >
                       <Sliders className="w-3.5 h-3.5 text-stone-500" />
                       <span>Edit Settings</span>
+                    </button>
+
+                    <button
+                      onClick={handleCopyLink}
+                      className="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-xs font-medium text-stone-800 transition flex items-center gap-1.5"
+                    >
+                      {copiedLink ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          <span className="text-emerald-700 font-semibold">Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5 text-stone-500" />
+                          <span>Copy Link</span>
+                        </>
+                      )}
                     </button>
 
                     <a
@@ -632,12 +659,33 @@ export default function AdminPage() {
                   <div className="w-48 h-48 mx-auto bg-stone-100 rounded-2xl animate-pulse" />
                 )}
 
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold text-stone-800 truncate">
-                    {guestUrl}
-                  </p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 bg-stone-50 p-2 rounded-xl border border-stone-200">
+                    <input
+                      type="text"
+                      readOnly
+                      value={guestUrl}
+                      className="text-xs text-stone-700 bg-transparent flex-1 font-mono truncate focus:outline-none select-all px-1"
+                    />
+                    <button
+                      onClick={handleCopyLink}
+                      className="px-3 py-1.5 bg-stone-900 hover:bg-stone-800 text-white text-xs font-medium rounded-lg flex items-center gap-1 transition shrink-0"
+                    >
+                      {copiedLink ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span>Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                   <p className="text-[11px] text-stone-500">
-                    Guests scan this with their phone to instantly access the upload page.
+                    Guests scan this QR code or use the link directly to access the upload page.
                   </p>
                 </div>
 
