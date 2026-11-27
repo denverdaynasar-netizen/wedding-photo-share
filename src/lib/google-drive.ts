@@ -537,3 +537,77 @@ export async function getFolderStats(folderId: string): Promise<EventStats> {
     return { photoCount: 0, totalBytes: 0 };
   }
 }
+
+/**
+ * Loads event list from Google Drive (_memoryshare_events.json).
+ */
+export async function loadEventsFromDrive(): Promise<any[] | null> {
+  if (!isDriveConfigured()) return null;
+
+  try {
+    const drive = getDriveClient();
+    const listRes = await drive.files.list({
+      q: "name = '_memoryshare_events.json' and trashed = false",
+      fields: 'files(id, name)',
+      pageSize: 1,
+    });
+
+    const file = listRes.data.files?.[0];
+    if (!file?.id) return null;
+
+    const fileRes = await drive.files.get(
+      { fileId: file.id, alt: 'media' },
+      { responseType: 'text' }
+    );
+
+    const raw = typeof fileRes.data === 'string' ? fileRes.data : JSON.stringify(fileRes.data);
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : null;
+  } catch (err) {
+    console.warn('Could not load events from Google Drive:', err);
+    return null;
+  }
+}
+
+/**
+ * Saves event list to Google Drive (_memoryshare_events.json).
+ */
+export async function saveEventsToDrive(events: any[]): Promise<boolean> {
+  if (!isDriveConfigured()) return false;
+
+  try {
+    const drive = getDriveClient();
+    const listRes = await drive.files.list({
+      q: "name = '_memoryshare_events.json' and trashed = false",
+      fields: 'files(id, name)',
+      pageSize: 1,
+    });
+
+    const file = listRes.data.files?.[0];
+    const content = JSON.stringify(events, null, 2);
+    const media = {
+      mimeType: 'application/json',
+      body: Readable.from([content]),
+    };
+
+    if (file?.id) {
+      await drive.files.update({
+        fileId: file.id,
+        media,
+      });
+    } else {
+      await drive.files.create({
+        requestBody: {
+          name: '_memoryshare_events.json',
+          mimeType: 'application/json',
+        },
+        media,
+      });
+    }
+
+    return true;
+  } catch (err) {
+    console.error('Failed to save events to Google Drive:', err);
+    return false;
+  }
+}
