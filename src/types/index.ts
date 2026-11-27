@@ -2,6 +2,8 @@ export interface WeddingEvent {
   id: string;
   slug: string;
   name: string;
+  subtitle?: string;
+  eventDate?: string;
   welcomeMessage: string;
   eventCode?: string;
   maxPhotos?: number;

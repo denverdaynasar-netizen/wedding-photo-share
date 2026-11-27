@@ -56,6 +56,8 @@ export default function AdminPage() {
 
   // Form fields
   const [formName, setFormName] = useState('');
+  const [formSubtitle, setFormSubtitle] = useState('');
+  const [formEventDate, setFormEventDate] = useState('');
   const [formSlug, setFormSlug] = useState('');
   const [formWelcome, setFormWelcome] = useState('');
   const [formCode, setFormCode] = useState('');
@@ -174,6 +176,8 @@ export default function AdminPage() {
   // Open Create Form
   const openCreateModal = () => {
     setFormName('');
+    setFormSubtitle('');
+    setFormEventDate('');
     setFormSlug('');
     setFormWelcome('Thank you for celebrating with us! Please snap and share all your favorite moments from our special day.');
     setFormCode('');
@@ -187,6 +191,8 @@ export default function AdminPage() {
   const openEditModal = () => {
     if (!activeEvent) return;
     setFormName(activeEvent.name);
+    setFormSubtitle(activeEvent.subtitle || '');
+    setFormEventDate(activeEvent.eventDate || '');
     setFormSlug(activeEvent.slug);
     setFormWelcome(activeEvent.welcomeMessage);
     setFormCode(activeEvent.eventCode || '');
@@ -206,6 +212,8 @@ export default function AdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formName,
+          subtitle: formSubtitle,
+          eventDate: formEventDate,
           slug: formSlug,
           welcomeMessage: formWelcome,
           eventCode: formCode,
@@ -239,6 +247,8 @@ export default function AdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formName,
+          subtitle: formSubtitle,
+          eventDate: formEventDate,
           welcomeMessage: formWelcome,
           eventCode: formCode,
           maxPhotos: formMaxPhotos ? parseInt(formMaxPhotos, 10) : undefined,
@@ -441,7 +451,17 @@ export default function AdminPage() {
                     <h2 className="text-2xl font-serif font-bold text-stone-900">
                       {activeEvent.name}
                     </h2>
-                    <p className="text-xs text-stone-500 mt-0.5">
+                    {activeEvent.subtitle && (
+                      <p className="text-sm font-serif italic text-stone-700 mt-0.5">
+                        {activeEvent.subtitle}
+                      </p>
+                    )}
+                    {activeEvent.eventDate && (
+                      <p className="text-[11px] font-sans uppercase tracking-[0.2em] text-[#9C7A4A] font-semibold mt-0.5">
+                        {activeEvent.eventDate}
+                      </p>
+                    )}
+                    <p className="text-xs text-stone-500 mt-1">
                       Slug: <code className="font-mono bg-stone-100 px-1.5 py-0.5 rounded">/e/{activeEvent.slug}</code>
                     </p>
                   </div>
@@ -670,12 +690,12 @@ export default function AdminPage() {
             <form onSubmit={handleCreateEvent} className="space-y-4 text-xs">
               <div>
                 <label className="block font-medium text-stone-700 mb-1">
-                  Event / Celebrant Name *
+                  Event Title (Line 1) *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Chloe's 18th Birthday or Noel & Danica's Wedding"
+                  placeholder="e.g. The Lagpao Wedding or Chloe's 18th Birthday"
                   value={formName}
                   onChange={(e) => {
                     setFormName(e.target.value);
@@ -690,6 +710,34 @@ export default function AdminPage() {
                   }}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-1 focus:ring-stone-400 text-stone-800"
                 />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-medium text-stone-700 mb-1">
+                    Subtitle / Couple Names (Line 2, Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Sarah and Jay"
+                    value={formSubtitle}
+                    onChange={(e) => setFormSubtitle(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-1 focus:ring-stone-400 text-stone-800"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-medium text-stone-700 mb-1">
+                    Event Date (Line 3, Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Dec. 18, 2026"
+                    value={formEventDate}
+                    onChange={(e) => setFormEventDate(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-1 focus:ring-stone-400 text-stone-800"
+                  />
+                </div>
               </div>
 
               <div>
@@ -803,7 +851,7 @@ export default function AdminPage() {
             <form onSubmit={handleEditEvent} className="space-y-4 text-xs">
               <div>
                 <label className="block font-medium text-stone-700 mb-1">
-                  Event Name
+                  Event Title (Line 1) *
                 </label>
                 <input
                   type="text"
@@ -812,6 +860,34 @@ export default function AdminPage() {
                   onChange={(e) => setFormName(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-1 focus:ring-stone-400 text-stone-800"
                 />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-medium text-stone-700 mb-1">
+                    Subtitle / Couple Names (Line 2, Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Sarah and Jay"
+                    value={formSubtitle}
+                    onChange={(e) => setFormSubtitle(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-1 focus:ring-stone-400 text-stone-800"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-medium text-stone-700 mb-1">
+                    Event Date (Line 3, Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Dec. 18, 2026"
+                    value={formEventDate}
+                    onChange={(e) => setFormEventDate(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-1 focus:ring-stone-400 text-stone-800"
+                  />
+                </div>
               </div>
 
               <div>

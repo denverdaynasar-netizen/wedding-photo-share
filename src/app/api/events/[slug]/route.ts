@@ -37,6 +37,8 @@ export async function PATCH(
 
     const allowedUpdates = [
       'name',
+      'subtitle',
+      'eventDate',
       'welcomeMessage',
       'eventCode',
       'maxPhotos',

@@ -55,7 +55,17 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { name, slug, welcomeMessage, eventCode, maxPhotos, uploadEnabled, accentColor } = body;
+    const {
+      name,
+      subtitle,
+      eventDate,
+      slug,
+      welcomeMessage,
+      eventCode,
+      maxPhotos,
+      uploadEnabled,
+      accentColor,
+    } = body;
 
     if (!name || !name.trim()) {
       return NextResponse.json({ error: 'Event name is required' }, { status: 400 });
@@ -72,6 +82,8 @@ export async function POST(req: NextRequest) {
 
     const created = await createEvent({
       name: name.trim(),
+      subtitle: subtitle?.trim() || undefined,
+      eventDate: eventDate?.trim() || undefined,
       slug: cleanSlug,
       welcomeMessage: welcomeMessage || "Thank you for sharing your memories with us!",
       eventCode: eventCode?.trim() || '',

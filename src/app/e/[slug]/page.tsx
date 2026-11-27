@@ -37,6 +37,8 @@ interface EventData {
   id: string;
   slug: string;
   name: string;
+  subtitle?: string;
+  eventDate?: string;
   welcomeMessage: string;
   hasCode: boolean;
   uploadEnabled: boolean;
@@ -457,10 +459,29 @@ function GuestEventContent() {
           <div className="h-px w-8 bg-gradient-to-l from-transparent to-[#C5A880]" />
         </div>
 
-        {/* Couple Names */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-light text-stone-900 tracking-tight leading-tight">
-          {event.name}
-        </h1>
+        {/* Event 3-Tier Title Header */}
+        <div className="space-y-1 sm:space-y-1.5">
+          {/* Line 1: Main Event Title (e.g. The Lagpao Wedding) */}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-light text-stone-900 tracking-tight leading-tight">
+            {event.name}
+          </h1>
+
+          {/* Line 2: Subtitle / Couple (e.g. Sarah and Jay) */}
+          {event.subtitle && (
+            <p className="text-xl sm:text-2xl md:text-3xl font-serif italic text-stone-700 tracking-normal">
+              {event.subtitle}
+            </p>
+          )}
+
+          {/* Line 3: Event Date (e.g. Dec. 18, 2026) */}
+          {event.eventDate && (
+            <div className="pt-1 flex items-center justify-center gap-2">
+              <span className="text-[11px] sm:text-xs uppercase tracking-[0.25em] text-[#9C7A4A] font-semibold font-sans">
+                {event.eventDate}
+              </span>
+            </div>
+          )}
+        </div>
 
         {/* Intimate Welcome Note */}
         <p className="mt-3 text-stone-600 font-serif italic text-base sm:text-lg max-w-md mx-auto font-normal leading-relaxed">

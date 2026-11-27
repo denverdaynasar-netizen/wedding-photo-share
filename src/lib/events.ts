@@ -11,7 +11,9 @@ const DEFAULT_EVENTS: WeddingEvent[] = [
   {
     id: 'evt-default-1',
     slug: 'noel-and-danica',
-    name: "Noel & Danica's Wedding",
+    name: "The Wedding Celebration",
+    subtitle: "Noel & Danica",
+    eventDate: "December 18, 2026",
     welcomeMessage: "Thank you for celebrating with us! Please snap and share all your favorite moments from our special day.",
     eventCode: '',
     uploadEnabled: true,

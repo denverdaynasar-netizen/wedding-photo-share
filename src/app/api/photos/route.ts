@@ -38,6 +38,8 @@ export async function GET(req: NextRequest) {
         id: event.id,
         slug: event.slug,
         name: event.name,
+        subtitle: event.subtitle || null,
+        eventDate: event.eventDate || null,
         welcomeMessage: event.welcomeMessage,
         hasCode: Boolean(event.eventCode && event.eventCode.trim() !== ''),
         uploadEnabled: event.uploadEnabled,

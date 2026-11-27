@@ -47,30 +47,51 @@ export async function generateTableCardPdf(event: WeddingEvent, guestUrl: string
   doc.setLineWidth(0.2);
   doc.rect(7, 7, pageWidth - 14, pageHeight - 14);
 
-  // Header Title
+  // Header Title - Line 1 (Main Event Title)
   doc.setTextColor(35, 30, 25);
   doc.setFont('times', 'bold');
-  doc.setFontSize(16);
+  doc.setFontSize(15);
   
-  // Truncate or split long event name
   const titleLines = doc.splitTextToSize(event.name, pageWidth - 24);
-  doc.text(titleLines, pageWidth / 2, 22, { align: 'center' });
+  let currentY = 18;
+  doc.text(titleLines, pageWidth / 2, currentY, { align: 'center' });
+  currentY += (titleLines.length * 5.5);
+
+  // Line 2 (Subtitle / Couple, e.g. Sarah and Jay)
+  if (event.subtitle) {
+    doc.setFont('times', 'italic');
+    doc.setFontSize(11);
+    doc.setTextColor(60, 50, 45);
+    doc.text(event.subtitle, pageWidth / 2, currentY, { align: 'center' });
+    currentY += 5;
+  }
+
+  // Line 3 (Event Date, e.g. Dec. 18, 2026)
+  if (event.eventDate) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(140, 110, 75);
+    doc.text(event.eventDate.toUpperCase(), pageWidth / 2, currentY, { align: 'center' });
+    currentY += 4.5;
+  }
 
   // Accent divider line
   doc.setDrawColor(200, 165, 120);
   doc.setLineWidth(0.3);
-  doc.line(pageWidth / 2 - 18, 30, pageWidth / 2 + 18, 30);
+  doc.line(pageWidth / 2 - 16, currentY, pageWidth / 2 + 16, currentY);
+  currentY += 4.5;
 
-  // Subtitle
+  // Tagline
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
-  doc.setTextColor(90, 80, 70);
-  doc.text('CAPTURE & SHARE THE MOMENT', pageWidth / 2, 36, { align: 'center' });
+  doc.setFontSize(8.5);
+  doc.setTextColor(100, 90, 80);
+  doc.text('CAPTURE & SHARE THE MOMENT', pageWidth / 2, currentY, { align: 'center' });
+  currentY += 4;
 
-  // QR Code Image (centered, 48x48 mm)
-  const qrSize = 48;
+  // QR Code Image (centered, 46x46 mm)
+  const qrSize = 46;
   const qrX = (pageWidth - qrSize) / 2;
-  const qrY = 42;
+  const qrY = Math.max(currentY, 41);
   doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
 
   // Scan instruction
